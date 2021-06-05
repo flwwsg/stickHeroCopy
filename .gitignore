@@ -51,4 +51,5 @@ Thumbs.db
 #//////////////////////////
 
 .vscode/
-creator.d.ts
+spriteCreator.d.ts
+/creator.d.ts

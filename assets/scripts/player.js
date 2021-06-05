@@ -1,3 +1,4 @@
+const storageManager = require('./storageManager');
 
 cc.Class({
     extends: cc.Component,
@@ -27,4 +28,9 @@ cc.Class({
     },
 
     // update (dt) {},
+
+    // 设置最高分
+    updateHighestScoreLabel() {
+        this.highestScoreLabel.string = '最高分:' + storageManager.getHighestScore();
+    }
 });
