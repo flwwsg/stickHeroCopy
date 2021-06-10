@@ -15,7 +15,7 @@ const spriteCreator = (function () {
             const sprite = newLand.addComponent(cc.Sprite);
             sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
             newLand.color = cc.Color.BLACK;
-            newLand.height = g.size.hero.height;
+            newLand.height = g.heroSize.height;
             newLand.width = width;
 
             // 生成红色块
@@ -25,8 +25,8 @@ const spriteCreator = (function () {
             redSprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
             redLand.color = cc.Color.RED;
             redLand.parent = newLand;
-            redLand.height = g.size.redLand.height;
-            redLand.width = g.size.redLand.width;
+            redLand.height = g.redLandSize.height;
+            redLand.width = g.redLandSize.width;
             redLand.setPosition(newLand.width/2, newLand.height);
             if (spriteFrameCache) {
                 sprite.spriteFrame = spriteFrameCache;
@@ -45,7 +45,7 @@ const spriteCreator = (function () {
             const stick = new cc.Node('stick');
             // 水平居中
             stick.anchorY = 0;
-            stick.y = g.size.hero.height;
+            stick.y = g.heroSize.height;
             const sprite = stick.addComponent(cc.Sprite);
             // sprite 模式
             sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
