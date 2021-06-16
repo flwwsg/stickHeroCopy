@@ -1,4 +1,6 @@
 const storageManager = require('./storageManager');
+const spriteCreator = require('./spriteCreator');
+const fsm = require('./fsm');
 
 cc.Class({
     extends: cc.Component,
@@ -34,23 +36,22 @@ cc.Class({
         this.currentLandRange = 0;
         this.heroWorldPosX = 0;
         this.updateHighestScoreLabel();
-        // TODO init gameController
         this.createNewLand();
         const range = this.getLandRange();
         // 角色世界坐标
         this.heroWorldPosX = this.firstLand.width - (1 - this.hero.anchorX) * this.hero.width - this.stickWidth;
-
         // 第二块跳板
         this.secondLand.setPosition(range + this.firstLand.width, 0);
-
-        // TODO register event
-        const ani = this.hero.getComponent(cc.Animation);
-        ani.on('stop', (type, state, target) => {
-            if (state.name === 'heroTick') {
-                // TODO fsm
-                // fsm.stickFall()
-            }
-        });
+        // 初始化
+        fsm.init(this);
+        this.registryEvent();
+        // const ani = this.hero.getComponent(cc.Animation);
+        // ani.on('stop', (type, state, target) => {
+        //     if (state.name === 'heroTick') {
+        //         // TODO fsm
+        //         // fsm.stickFall()
+        //     }
+        // });
 
     },
 
@@ -74,7 +75,7 @@ cc.Class({
 
     touchStart(event) {
         cc.log('touchStart');
-        // TODO fsm press stick
+        fsm.toPress();
     },
     touchEnd(event) {
         cc.log('touch end');
@@ -89,12 +90,40 @@ cc.Class({
     updateHighestScoreLabel() {
         this.highestScoreLabel.string = '最高分:' + storageManager.getHighestScore();
     },
-    // TODO 跳板的范围
+    // 跳板的范围
     getLandRange() {
+        this.currentLandRange = this.landRange.x + (this.landRange.y - this.landRange.x) * Math.random();
+        // 窗口大小
+        const winSize = cc.winSize;
+        if (winSize.width < this.currentLandRange + this.heroWorldPosX + this.hero.width + this.secondLand.width) {
+            this.currentLandRange = winSize.width - this.heroWorldPosX - this.hero.width - this.secondLand.width;
+        }
+        return this.currentLandRange;
     },
 
-    // TODO create new land
-    createNewLand() {
+    getLandWidth() {
+        return this.landWidth.x + (this.landWidth.y - this.landWidth.x) * Math.random();
+    },
 
+    createNewLand() {
+        this.secondLand = spriteCreator.createNewLand(this.getLandWidth());
+        this.secondLand.parent = this.node;
+    },
+    // 按压棍子
+    onStickPress() {
+        this.stickPress = true;
+        this.stick = this.createStick();
+        // 棍子立于英雄前面
+        this.stick.x = this.hero.x + this.hero.width * (1 - this.hero.anchorX) + this.stick.width;
+        // TODO add animation
+        // const animation = this.hero.getComponent(cc.Animation);
+        // animation.play()
+    },
+
+    createStick() {
+        cc.log('create stick');
+        const stick = spriteCreator.createStick(this.stickWidth);
+        stick.parent = this.node;
+        return stick;
     }
 });

@@ -1,5 +1,5 @@
 
-const g = require('./constants');
+const { heroSize, redLandSize } = require('./constants');
 
 // 闭包处理缓存
 const spriteCreator = (function () {
@@ -15,7 +15,7 @@ const spriteCreator = (function () {
             const sprite = newLand.addComponent(cc.Sprite);
             sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
             newLand.color = cc.Color.BLACK;
-            newLand.height = g.heroSize.height;
+            newLand.height = heroSize.height;
             newLand.width = width;
 
             // 生成红色块
@@ -25,8 +25,8 @@ const spriteCreator = (function () {
             redSprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
             redLand.color = cc.Color.RED;
             redLand.parent = newLand;
-            redLand.height = g.redLandSize.height;
-            redLand.width = g.redLandSize.width;
+            redLand.height = redLandSize.height;
+            redLand.width = redLandSize.width;
             redLand.setPosition(newLand.width/2, newLand.height);
             if (spriteFrameCache) {
                 sprite.spriteFrame = spriteFrameCache;
@@ -39,13 +39,15 @@ const spriteCreator = (function () {
                     spriteFrameCache = sf;
                 });
             }
+            newLand.center = redLand;
+            return newLand;
         },
         // 添加棍子长度
         createStick: function (width) {
             const stick = new cc.Node('stick');
             // 水平居中
             stick.anchorY = 0;
-            stick.y = g.heroSize.height;
+            stick.y = heroSize.height;
             const sprite = stick.addComponent(cc.Sprite);
             // sprite 模式
             sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;

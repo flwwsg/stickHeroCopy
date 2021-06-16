@@ -958,13 +958,33 @@
       "x": 20,
       "y": 300
     },
+    "landWidth": {
+      "__type__": "cc.Vec2",
+      "x": 20,
+      "y": 200
+    },
     "hero": {
       "__id__": 18
     },
-    "firstLand": null,
-    "canvas": null,
-    "scoreLabel": null,
-    "highestScoreLabel": null,
+    "firstLand": {
+      "__id__": 16
+    },
+    "secondLand": null,
+    "moveDuration": 0.5,
+    "stickSpeed": 400,
+    "heroMoveSpeed": 400,
+    "stickWidth": 6,
+    "canvas": {
+      "__id__": 2
+    },
+    "scoreLabel": {
+      "__id__": 11
+    },
+    "highestScoreLabel": {
+      "__id__": 8
+    },
+    "overLabel": null,
+    "perfectLabel": null,
     "_id": "11CRDPcXVGl7/eANxKZdzN"
   }
 ]

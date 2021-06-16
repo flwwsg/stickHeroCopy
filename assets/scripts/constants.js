@@ -32,6 +32,11 @@ const fsmState = {
     end: 'end',
 }
 
+// 游戏动画
+const gameAnimation = {
+    heroPush: 'heroPush',
+}
+
 // 游戏动作
 const gameAction = {
     // 压棍子

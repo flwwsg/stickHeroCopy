@@ -13,6 +13,14 @@ let model;
 
 function _evaluate(message) {
     cc.log('evaluating message ' + message);
+    if (evaluating) {
+        // 正在处理
+        cc.log('on evaluating');
+        return;
+    }
+    evaluating = true;
+    State.evaluate(model, instance, message);
+    evaluating = false;
 }
 
 function init(target) {
@@ -21,14 +29,14 @@ function init(target) {
     const initial = new State.PseudoState('init-stand', model, State.PseudoStateKind.Initial);
 
     // 状态机状态
-    const stand = new State.StateMachine(fsmState.stand);
-    const stickPressEnd = new State.StateMachine(fsmState.stickPressEnd);
-    const heroTick = new State.StateMachine(fsmState.heroTick);
-    const stickFall = new State.StateMachine(fsmState.stickFall);
-    const heroMoveToLand = new State.StateMachine(fsmState.heroMoveToLand);
-    const heroMoveToStickEnd = new State.StateMachine(fsmState.heroMoveToStickEnd);
-    const heroDown = new State.StateMachine(fsmState.heroDown);
-    const end = new State.StateMachine(fsmState.end);
+    const stand = new State.State(fsmState.stand, model);
+    const stickPressEnd = new State.State(fsmState.stickPressEnd, model);
+    const heroTick = new State.State(fsmState.heroTick, model);
+    const stickFall = new State.State(fsmState.stickFall, model);
+    const heroMoveToLand = new State.State(fsmState.heroMoveToLand, model);
+    const heroMoveToStickEnd = new State.State(fsmState.heroMoveToStickEnd, model);
+    const heroDown = new State.State(fsmState.heroDown, model);
+    const end = new State.State(fsmState.end, model);
 
     // 初始为站立
     initial.to(stand);
@@ -44,11 +52,23 @@ function init(target) {
     // 重新开始
     end.to(stand).when(on(gameAction.reset));
 
+    // 生成棍子
+    stickPressEnd.entry(function () {
+        cc.log('enter on press');
+        target.onStickPress();
+    });
+
     // 初始化状态机
     instance = new State.StateMachineInstance('fsm');
     State.initialise(model, instance);
 }
 
+// 按压棍子
+function toPress() {
+    _evaluate(gameAction.stickPress);
+}
+
 module.exports = {
     init,
+    toPress,
 }
