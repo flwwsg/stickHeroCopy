@@ -55,7 +55,11 @@ function init(target) {
     // 生成棍子
     stickPressEnd.entry(function () {
         cc.log('enter on press');
-        target.onStickPress();
+        target.enterStickPress();
+    });
+    heroTick.entry(function () {
+        cc.log('enter hero stick');
+        target.enterHerotick();
     });
 
     // 初始化状态机
@@ -68,7 +72,13 @@ function toPress() {
     _evaluate(gameAction.stickPress);
 }
 
+// 踢棍子
+function heroStick() {
+    _evaluate(gameAction.heroTick);
+}
+
 module.exports = {
     init,
     toPress,
+    heroStick,
 }

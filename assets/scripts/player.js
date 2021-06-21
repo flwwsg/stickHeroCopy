@@ -79,7 +79,7 @@ cc.Class({
     },
     touchEnd(event) {
         cc.log('touch end');
-        // TODO fsm hero touch stick
+        fsm.heroStick();
     },
     touchCancel(event) {
         cc.log('touch cancel');
@@ -110,14 +110,21 @@ cc.Class({
         this.secondLand.parent = this.node;
     },
     // 按压棍子
-    onStickPress() {
-        this.stickPress = true;
+    enterStickPress() {
+        this.isPress = true;
         this.stick = this.createStick();
         // 棍子立于英雄前面
-        this.stick.x = this.hero.x + this.hero.width * (1 - this.hero.anchorX) + this.stick.width;
-        // TODO add animation
+        this.stick.x = this.hero.x + this.hero.width * (1 - this.hero.anchorX) + this.stick.width * this.stick.anchorX;
+        console.log('stick.x', this.stick.x);
+        // TODO play heroPush animation
         // const animation = this.hero.getComponent(cc.Animation);
         // animation.play()
+    },
+
+    // 踢棍子
+    enterHerotick() {
+        this.isPress = false;
+        // TODO play hero tick
     },
 
     createStick() {
