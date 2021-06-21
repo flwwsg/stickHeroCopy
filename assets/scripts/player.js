@@ -133,8 +133,6 @@ cc.Class({
     // onStickFall
     enterStickFall() {
         // TODO check fall fail or success
-        // const stickFall = cc.tween().to(0.5, { rotation: 90 });
-        // stickFall.easing(cc.easeIn(3));
         cc.tween(this.stick).to(0.5, { angle: -90 }, { easing: 'sineIn' }).start();
         // this.stick.runAction(stickFall);
     },
