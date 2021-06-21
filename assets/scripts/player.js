@@ -133,7 +133,17 @@ cc.Class({
     // onStickFall
     enterStickFall() {
         // TODO check fall fail or success
-        cc.tween(this.stick).to(0.5, { angle: -90 }, { easing: 'sineIn' }).start();
+        const cb = function () {
+            // 棍子的长度, 扣掉转下去时，棍子的宽度
+            const stickLength = this.stick.height - this.stick.width * this.stick.anchorX;
+            if (stickLength < this.currentLandRange || stickLength > this.currentLandRange + this.secondLand.width) {
+                // 失败
+                cc.log('stick fail');
+            } else {
+                cc.log('stick success');
+            }
+        };
+        cc.tween(this.stick).to(0.5, { angle: -90 }, { easing: 'sineIn' }).call(cb.bind(this)).start();
         // this.stick.runAction(stickFall);
     },
 
