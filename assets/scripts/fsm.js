@@ -14,8 +14,11 @@ let model;
 function _evaluate(message) {
     cc.log('evaluating message ' + message);
     if (evaluating) {
-        // 正在处理
+        // 正在处理，1s以后再试
         cc.log('on evaluating');
+        setTimeout(function () {
+            State.evaluate(model, instance, message);
+        }, 1);
         return;
     }
     evaluating = true;
@@ -59,7 +62,11 @@ function init(target) {
     });
     heroTick.entry(function () {
         cc.log('enter hero stick');
-        target.enterHerotick();
+        target.enterHeroTick();
+    });
+    stickFall.entry(function () {
+        cc.log('enter stick fall');
+        target.enterStickFall();
     });
 
     // 初始化状态机
@@ -77,8 +84,13 @@ function heroStick() {
     _evaluate(gameAction.heroTick);
 }
 
+function stickFall() {
+    _evaluate(gameAction.stickFall);
+}
+
 module.exports = {
     init,
     toPress,
     heroStick,
+    stickFall,
 }

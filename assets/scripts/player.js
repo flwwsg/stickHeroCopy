@@ -110,6 +110,7 @@ cc.Class({
         this.secondLand.parent = this.node;
     },
     // 按压棍子
+    // onStickLengthen
     enterStickPress() {
         this.isPress = true;
         this.stick = this.createStick();
@@ -122,9 +123,20 @@ cc.Class({
     },
 
     // 踢棍子
-    enterHerotick() {
+    // onHeroTick
+    enterHeroTick() {
         this.isPress = false;
-        // TODO play hero tick
+        // TODO play hero tick, to fsm stickFall state on play finish
+        fsm.stickFall();
+    },
+
+    // onStickFall
+    enterStickFall() {
+        // TODO check fall fail or success
+        // const stickFall = cc.tween().to(0.5, { rotation: 90 });
+        // stickFall.easing(cc.easeIn(3));
+        cc.tween(this.stick).to(0.5, { angle: -90 }, { easing: 'sineIn' }).start();
+        // this.stick.runAction(stickFall);
     },
 
     createStick() {
