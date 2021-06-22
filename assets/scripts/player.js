@@ -132,21 +132,50 @@ cc.Class({
 
     // onStickFall
     enterStickFall() {
-        // TODO check fall fail or success
         const cb = function () {
+            // hero move
             // 棍子的长度, 扣掉转下去时，棍子的宽度
             const stickLength = this.stick.height - this.stick.width * this.stick.anchorX;
             if (stickLength < this.currentLandRange || stickLength > this.currentLandRange + this.secondLand.width) {
                 // 失败
                 cc.log('stick fail');
+                fsm.heroMoveFail();
             } else {
                 cc.log('stick success');
             }
         };
         cc.tween(this.stick).to(0.5, { angle: -90 }, { easing: 'sineIn' }).call(cb.bind(this)).start();
-        // this.stick.runAction(stickFall);
     },
 
+    enterStickEnd() {
+        // TODO play hero run
+        const cb = () => {
+            // TODO stop animation
+            fsm.heroDown();
+        };
+        this.heroMove(this.stick.height, cb);
+    },
+
+    enterHeroDown() {
+        // stick down
+        cc.tween(this.stick).to(0.5, { angle: -180 }, { easing: 'sineIn'}).start();
+        // hero down
+        const cb = () => {
+            // TODO gameOver
+            cc.log('game over');
+            // fsm.gameOver();
+        }
+        cc.tween(this.hero).by(0.5, { position: cc.v2(0, -300 - this.hero.height)}, { easing: 'sineIn' }).call(cb.bind(this)).start();
+    },
+
+    heroMove(runLength, cb) {
+        const t = runLength / this.heroMoveSpeed;
+        if (cb) {
+            cc.tween(this.hero).by(t, { position: cc.v2(runLength, 0) }).call(cb.bind(this)).start();
+        } else {
+            cc.tween(this.hero).by(t, { position: cc.v2(runLength, 0) }).start();
+        }
+    },
     createStick() {
         cc.log('create stick');
         const stick = spriteCreator.createStick(this.stickWidth);

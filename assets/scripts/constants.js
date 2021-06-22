@@ -46,10 +46,10 @@ const gameAction = {
     // 落下棍子
     stickFall: 'stickFall',
     moveToLand: 'moveToLand',
-    moveToLandEnd: 'moveToLandEnd',
+    landMove: 'landMove',
     moveToStickEnd: 'moveToStickEnd',
-    moveDown: 'moveDown',
     heroDown: 'heroDown',
+    heroEnd: 'heroEnd',
     reset: 'reset',
 }
 

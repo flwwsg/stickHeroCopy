@@ -47,11 +47,11 @@ function init(target) {
     stickPressEnd.to(heroTick).when(on(gameAction.heroTick));
     heroTick.to(stickFall).when(on(gameAction.stickFall));
     stickFall.to(heroMoveToLand).when(on(gameAction.moveToLand));
+    heroMoveToLand.to(stand).when(on(gameAction.landMove));
     // 没有走到下一地板
     stickFall.to(heroMoveToStickEnd).when(on(gameAction.moveToStickEnd));
-    heroMoveToLand.to(stand).when(on(gameAction.moveToLandEnd));
-    heroMoveToStickEnd.to(heroDown).when(on(gameAction.moveDown));
-    heroDown.to(end).when(on(gameAction.heroDown));
+    heroMoveToStickEnd.to(heroDown).when(on(gameAction.heroDown));
+    heroDown.to(end).when(on(gameAction.heroEnd));
     // 重新开始
     end.to(stand).when(on(gameAction.reset));
 
@@ -67,6 +67,14 @@ function init(target) {
     stickFall.entry(function () {
         cc.log('enter stick fall');
         target.enterStickFall();
+    });
+    heroMoveToStickEnd.entry(function () {
+        cc.log('hero move fail');
+        target.enterStickEnd();
+    });
+    heroDown.entry(function () {
+        cc.log('hero down');
+        target.enterHeroDown();
     });
 
     // 初始化状态机
@@ -88,9 +96,19 @@ function stickFall() {
     _evaluate(gameAction.stickFall);
 }
 
+function heroMoveFail() {
+    _evaluate(gameAction.moveToStickEnd);
+}
+
+function heroDown() {
+    _evaluate(gameAction.heroDown);
+}
+
 module.exports = {
     init,
     toPress,
     heroStick,
     stickFall,
+    heroMoveFail,
+    heroDown,
 }
