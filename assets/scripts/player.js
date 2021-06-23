@@ -1,6 +1,7 @@
 const storageManager = require('./storageManager');
 const spriteCreator = require('./spriteCreator');
 const fsm = require('./fsm');
+const { redLandSize } =require('./constants');
 
 cc.Class({
     extends: cc.Component,
@@ -26,6 +27,7 @@ cc.Class({
     },
 
     onLoad () {
+        this.isFirst = true;
         this.runLength = 0;
         // 棍子
         this.stick = null;
@@ -71,6 +73,11 @@ cc.Class({
         this.canvas.on(cc.Node.EventType.TOUCH_START, this.touchStart.bind(this), this.node);
         this.canvas.on(cc.Node.EventType.TOUCH_END, this.touchEnd.bind(this), this.node);
         this.canvas.on(cc.Node.EventType.TOUCH_CANCEL, this.touchCancel.bind(this), this.node);
+    },
+
+    unregisterEvent() {
+        cc.log('touch off');
+        this.canvas.targetOff(this.node);
     },
 
     touchStart(event) {
@@ -130,6 +137,11 @@ cc.Class({
         fsm.stickFall();
     },
 
+    exitHeroTick() {
+        // 禁止触摸
+        this.unregisterEvent();
+    },
+
     // onStickFall
     enterStickFall() {
         const cb = function () {
@@ -142,6 +154,13 @@ cc.Class({
                 fsm.heroMoveFail();
             } else {
                 cc.log('stick success');
+                fsm.heroMoveSuccess();
+                const halfSize = redLandSize.width / 2;
+                if (stickLength > this.currentLandRange + this.secondLand.width / 2 - halfSize
+                    && stickLength < this.currentLandRange + this.secondLand.width / 2 + halfSize) {
+                    // 落在红色区域中
+                    // TODO perform perfect
+                }
             }
         };
         cc.tween(this.stick).to(0.5, { angle: -90 }, { easing: 'sineIn' }).call(cb.bind(this)).start();
@@ -168,6 +187,42 @@ cc.Class({
         cc.tween(this.hero).by(0.5, { position: cc.v2(0, -300 - this.hero.height)}, { easing: 'sineIn' }).call(cb.bind(this)).start();
     },
 
+    enterHeroMoveSuccess() {
+        cc.log('hero move to land');
+        const cb = () => {
+            // TODO play hero run
+            // 跳过第一块
+            fsm.landMove();
+            this.getScore();
+        }
+        this.heroMove(this.currentLandRange + this.secondLand.width, cb);
+    },
+
+    // 生成新地
+    enterLandMove() {
+        cc.log('enter land move');
+        if (this.isFirst) {
+            // 跳过第一次
+            this.isFirst = false;
+            return;
+        }
+        const cb = () => {
+            this.registryEvent();
+        }
+        const winSize = cc.winSize;
+        const length = this.currentLandRange + this.secondLand.width;
+        // 地面的坐标
+        this.runLength += length;
+        cc.tween(this.node).by(this.moveDuration, { position: cc.v2(-length, 0) }).start();
+        this.firstLand = this.secondLand;
+        this.createNewLand();
+        const range = this.getLandRange();
+        this.secondLand.setPosition(this.runLength + winSize.width, 0);
+        // 移动到新位置
+        const l = winSize.width - range - this.heroWorldPosX - this.hero.width * this.hero.anchorX - this.stickWidth;
+        cc.tween(this.secondLand).by(this.moveDuration, { position: cc.v2(-l, 0) }).call(cb.bind(this)).start();
+    },
+
     heroMove(runLength, cb) {
         const t = runLength / this.heroMoveSpeed;
         if (cb) {
@@ -176,6 +231,25 @@ cc.Class({
             cc.tween(this.hero).by(t, { position: cc.v2(runLength, 0) }).start();
         }
     },
+
+    // 计算分数
+    getScore(num) {
+        if (num) {
+            this.score += num;
+        } else {
+            this.score++;
+        }
+        if (storageManager.getHighestScore() < this.score) {
+            storageManager.setHighestScore(this.score);
+            this.changeHighestScoreLabel();
+        }
+        this.scoreLabel.string = '得分:' + this.score;
+    },
+
+    changeHighestScoreLabel() {
+        this.highestScoreLabel.string = '最高分:' + storageManager.getHighestScore();
+    },
+
     createStick() {
         cc.log('create stick');
         const stick = spriteCreator.createStick(this.stickWidth);

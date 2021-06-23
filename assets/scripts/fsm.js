@@ -10,7 +10,6 @@ function on(message) {
 let evaluating = false;
 let instance;
 let model;
-
 function _evaluate(message) {
     cc.log('evaluating message ' + message);
     if (evaluating) {
@@ -57,26 +56,36 @@ function init(target) {
 
     // 生成棍子
     stickPressEnd.entry(function () {
-        cc.log('enter on press');
+        // cc.log('enter on press');
         target.enterStickPress();
     });
     heroTick.entry(function () {
-        cc.log('enter hero stick');
+        // cc.log('enter hero stick');
         target.enterHeroTick();
     });
+    heroTick.exit(function () {
+        target.exitHeroTick();
+    })
     stickFall.entry(function () {
-        cc.log('enter stick fall');
+        // cc.log('enter stick fall');
         target.enterStickFall();
     });
     heroMoveToStickEnd.entry(function () {
-        cc.log('hero move fail');
+        // cc.log('hero move fail');
         target.enterStickEnd();
     });
     heroDown.entry(function () {
-        cc.log('hero down');
+        // cc.log('hero down');
         target.enterHeroDown();
     });
-
+    heroMoveToLand.entry(function () {
+        // cc.log('hero move success');
+        target.enterHeroMoveSuccess();
+    });
+    stand.entry(function () {
+        // cc.log('land move');
+        target.enterLandMove();
+    })
     // 初始化状态机
     instance = new State.StateMachineInstance('fsm');
     State.initialise(model, instance);
@@ -104,6 +113,14 @@ function heroDown() {
     _evaluate(gameAction.heroDown);
 }
 
+function heroMoveSuccess() {
+    _evaluate(gameAction.moveToLand);
+}
+
+function landMove() {
+    _evaluate(gameAction.landMove);
+}
+
 module.exports = {
     init,
     toPress,
@@ -111,4 +128,6 @@ module.exports = {
     stickFall,
     heroMoveFail,
     heroDown,
+    heroMoveSuccess,
+    landMove,
 }
