@@ -218,7 +218,7 @@ cc.Class({
         this.createNewLand();
         const range = this.getLandRange();
         this.secondLand.setPosition(this.runLength + winSize.width, 0);
-        // 移动到新位置
+        // // 移动到新位置
         const l = winSize.width - range - this.heroWorldPosX - this.hero.width * this.hero.anchorX - this.stickWidth;
         cc.tween(this.secondLand).by(this.moveDuration, { position: cc.v2(-l, 0) }).call(cb.bind(this)).start();
     },
