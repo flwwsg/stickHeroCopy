@@ -231,7 +231,6 @@ cc.Class({
 
     playAgain() {
         this.gameOverBtn.active = false;
-        // TODO soft reset
         fsm.reset();
         cc.director.loadScene('main');
     },
