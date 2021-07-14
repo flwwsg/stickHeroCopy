@@ -12,7 +12,7 @@ let instance;
 let model;
 let isFirst = true;
 function _evaluate(message) {
-    cc.log('evaluating message ' + message);
+    // cc.log('evaluating message ' + message);
     if (evaluating) {
         // 正在处理，1s以后再试
         cc.log('on evaluating');
@@ -88,12 +88,11 @@ function init(target) {
         if (isFirst) {
             isFirst = false;
         } else {
-            cc.log('is first', isFirst);
             target.enterLandMove();
         }
     });
     end.entry(function () {
-        cc.log('game over');
+        // cc.log('game over');
         target.enterGameOver();
     });
     // 初始化状态机
