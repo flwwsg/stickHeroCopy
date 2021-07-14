@@ -90,10 +90,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 25
+        "__id__": 26
       },
       {
-        "__id__": 26
+        "__id__": 27
       }
     ],
     "_prefab": null,
@@ -886,7 +886,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 24
+        "__id__": 25
       }
     ],
     "_prefab": null,
@@ -1043,6 +1043,9 @@
     "_components": [
       {
         "__id__": 23
+      },
+      {
+        "__id__": 24
       }
     ],
     "_prefab": null,
@@ -1124,6 +1127,29 @@
     "_isTrimmedMode": true,
     "_atlas": null,
     "_id": "42Ut/DeIFNT5HPjet+qz+r"
+  },
+  {
+    "__type__": "cc.Animation",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 22
+    },
+    "_enabled": true,
+    "_defaultClip": null,
+    "_clips": [
+      {
+        "__uuid__": "d3a0ab50-6a34-48a3-a7c2-e454e1e760a1"
+      },
+      {
+        "__uuid__": "89f2182f-7a85-4036-8e58-aa456ea31043"
+      },
+      {
+        "__uuid__": "301b5fb2-4ca5-4931-ae91-9150dbd826c7"
+      }
+    ],
+    "playOnLoad": false,
+    "_id": "67z9/ooIxDq5lR/c1V4Alj"
   },
   {
     "__type__": "b2e64idSCdBeJkxAaQuJyoT",

@@ -35,6 +35,8 @@ const fsmState = {
 // 游戏动画
 const gameAnimation = {
     heroPush: 'heroPush',
+    heroTick: 'heroTick',
+    heroRun: 'heroRun',
 }
 
 // 游戏动作
@@ -58,4 +60,5 @@ module.exports = {
     redLandSize,
     fsmState,
     gameAction,
+    gameAnimation,
 }

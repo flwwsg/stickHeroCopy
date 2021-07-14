@@ -1,7 +1,7 @@
 const storageManager = require('./storageManager');
 const spriteCreator = require('./spriteCreator');
 const fsm = require('./fsm');
-const { redLandSize } =require('./constants');
+const { redLandSize, gameAnimation } =require('./constants');
 
 cc.Class({
     extends: cc.Component,
@@ -116,6 +116,14 @@ cc.Class({
         this.secondLand = spriteCreator.createNewLand(this.getLandWidth());
         this.secondLand.parent = this.node;
     },
+    playHero(type) {
+        const animation = this.hero.getComponent(cc.Animation);
+        animation.play(type);
+    },
+    stopPlayHero(type) {
+        const animation = this.hero.getComponent(cc.Animation);
+        animation.stop(type);
+    },
     // 按压棍子
     // onStickLengthen
     enterStickPress() {
@@ -123,17 +131,14 @@ cc.Class({
         this.stick = this.createStick();
         // 棍子立于英雄前面
         this.stick.x = this.hero.x + this.hero.width * (1 - this.hero.anchorX) + this.stick.width * this.stick.anchorX;
-        console.log('stick.x', this.stick.x);
-        // TODO play heroPush animation
-        // const animation = this.hero.getComponent(cc.Animation);
-        // animation.play()
+        this.playHero(gameAnimation.heroPush);
     },
 
     // 踢棍子
     // onHeroTick
     enterHeroTick() {
         this.isPress = false;
-        // TODO play hero tick, to fsm stickFall state on play finish
+        this.playHero(gameAnimation.heroTick);
         fsm.stickFall();
     },
 
@@ -167,9 +172,9 @@ cc.Class({
     },
 
     enterStickEnd() {
-        // TODO play hero run
+        this.playHero(gameAnimation.heroRun);
         const cb = () => {
-            // TODO stop animation
+            this.stopPlayHero(gameAnimation.heroRun);
             fsm.heroDown();
         };
         this.heroMove(this.stick.height, cb);
@@ -187,8 +192,10 @@ cc.Class({
 
     enterHeroMoveSuccess() {
         cc.log('hero move to land');
+        this.playHero(gameAnimation.heroRun);
         const cb = () => {
-            // TODO play hero run
+            // stop run
+            this.stopPlayHero(gameAnimation.heroRun);
             // 跳过第一块
             fsm.landMove();
             this.getScore();
