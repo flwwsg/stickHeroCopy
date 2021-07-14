@@ -10,6 +10,7 @@ function on(message) {
 let evaluating = false;
 let instance;
 let model;
+let isFirst = true;
 function _evaluate(message) {
     cc.log('evaluating message ' + message);
     if (evaluating) {
@@ -84,8 +85,17 @@ function init(target) {
     });
     stand.entry(function () {
         // cc.log('land move');
-        target.enterLandMove();
-    })
+        if (isFirst) {
+            isFirst = false;
+        } else {
+            cc.log('is first', isFirst);
+            target.enterLandMove();
+        }
+    });
+    end.entry(function () {
+        cc.log('game over');
+        target.enterGameOver();
+    });
     // 初始化状态机
     instance = new State.StateMachineInstance('fsm');
     State.initialise(model, instance);
@@ -121,6 +131,16 @@ function landMove() {
     _evaluate(gameAction.landMove);
 }
 
+function gameOver() {
+    _evaluate(gameAction.heroEnd);
+}
+
+function reset() {
+    isFirst = true;
+    // 不需要初始化,重载场景时会初始化
+    // _evaluate(gameAction.reset);
+}
+
 module.exports = {
     init,
     toPress,
@@ -130,4 +150,6 @@ module.exports = {
     heroDown,
     heroMoveSuccess,
     landMove,
+    gameOver,
+    reset,
 }

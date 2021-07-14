@@ -22,12 +22,11 @@ cc.Class({
         canvas: cc.Node,
         scoreLabel: cc.Label,
         highestScoreLabel: cc.Label,
-        overLabel: cc.Label,
+        gameOverBtn: cc.Node,
         perfectLabel: cc.Node,
     },
 
     onLoad () {
-        this.isFirst = true;
         this.runLength = 0;
         // 棍子
         this.stick = null;
@@ -44,6 +43,7 @@ cc.Class({
         this.heroWorldPosX = this.firstLand.width - (1 - this.hero.anchorX) * this.hero.width - this.stickWidth;
         // 第二块跳板
         this.secondLand.setPosition(range + this.firstLand.width, 0);
+        this.gameOverBtn.active = false;
         // 初始化
         fsm.init(this);
         this.registryEvent();
@@ -180,9 +180,7 @@ cc.Class({
         cc.tween(this.stick).to(0.5, { angle: -180 }, { easing: 'sineIn'}).start();
         // hero down
         const cb = () => {
-            // TODO gameOver
-            cc.log('game over');
-            // fsm.gameOver();
+            fsm.gameOver();
         }
         cc.tween(this.hero).by(0.5, { position: cc.v2(0, -300 - this.hero.height)}, { easing: 'sineIn' }).call(cb.bind(this)).start();
     },
@@ -201,11 +199,6 @@ cc.Class({
     // 生成新地
     enterLandMove() {
         cc.log('enter land move');
-        if (this.isFirst) {
-            // 跳过第一次
-            this.isFirst = false;
-            return;
-        }
         const cb = () => {
             this.registryEvent();
         }
@@ -223,6 +216,10 @@ cc.Class({
         cc.tween(this.secondLand).by(this.moveDuration, { position: cc.v2(-l, 0) }).call(cb.bind(this)).start();
     },
 
+    enterGameOver() {
+        this.gameOverBtn.active = true;
+    },
+
     heroMove(runLength, cb) {
         const t = runLength / this.heroMoveSpeed;
         if (cb) {
@@ -230,6 +227,13 @@ cc.Class({
         } else {
             cc.tween(this.hero).by(t, { position: cc.v2(runLength, 0) }).start();
         }
+    },
+
+    playAgain() {
+        this.gameOverBtn.active = false;
+        // TODO soft reset
+        fsm.reset();
+        cc.director.loadScene('main');
     },
 
     // 计算分数
